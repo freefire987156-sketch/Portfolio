@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo Manipulation — Farhan</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══ THEME TOKENS (same as portfolio) ═══ */
+[data-theme="light"] {
+  --bg:#e0e5ec; --text:#4a5568; --muted:#8a9ab0; --dim:#b0bccf;
+  --accent:#6c63ff; --accent2:#ff6584; --green:#43c98e; --amber:#f6a623; --cyan:#38bdf8;
+  --s1:#a3b1c6; --s2:#ffffff;
+  --out:8px 8px 18px #a3b1c6,-8px -8px 18px #ffffff;
+  --out-sm:5px 5px 10px #a3b1c6,-4px -4px 9px #ffffff;
+  --in:inset 5px 5px 12px #a3b1c6,inset -5px -5px 12px #ffffff;
+  --in-sm:inset 3px 3px 7px #a3b1c6,inset -3px -3px 7px #ffffff;
+  --card:12px 12px 28px #a3b1c6,-12px -12px 28px #ffffff;
+  --nav-bg:rgba(224,229,236,0.9);
+}
+[data-theme="dark"] {
+  --bg:#16192a; --text:#dde3f0; --muted:#556080; --dim:#334060;
+  --accent:#6c63ff; --accent2:#ff6584; --green:#43c98e; --amber:#f6a623; --cyan:#38bdf8;
+  --s1:#0c0e1a; --s2:#232640;
+  --out:6px 6px 16px #0c0e1a,-6px -6px 16px #232640;
+  --out-sm:4px 4px 10px #0c0e1a,-4px -4px 10px #232640;
+  --in:inset 4px 4px 10px #0c0e1a,inset -4px -4px 10px #232640;
+  --in-sm:inset 3px 3px 7px #0c0e1a,inset -3px -3px 7px #232640;
+  --card:8px 8px 22px #0c0e1a,-8px -8px 22px #232640;
+  --nav-bg:rgba(16,18,30,0.95);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden;min-height:100vh;transition:background 0.4s,color 0.3s}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--accent),var(--accent2));border-radius:10px}
+
+/* ═══ NAV ═══ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  padding:12px 28px;display:flex;justify-content:space-between;align-items:center;
+  background:var(--nav-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(128,128,128,0.12);transition:background 0.4s;
+}
+.back-btn{
+  font-family:'Syne',sans-serif;font-size:14px;font-weight:800;
+  background:var(--bg);border:none;border-radius:50px;box-shadow:var(--out-sm);
+  padding:8px 20px;cursor:pointer;color:var(--accent);
+  display:flex;align-items:center;gap:8px;transition:all 0.25s,background 0.4s;
+  text-decoration:none;
+}
+.back-btn:hover{box-shadow:var(--in-sm);transform:translateX(-3px)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.proj-nav-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--muted)}
+.theme-btn{background:var(--bg);border:none;border-radius:50px;box-shadow:var(--out-sm);width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;transition:all 0.3s,background 0.4s}
+.theme-btn:hover{box-shadow:var(--in-sm)}
+
+/* ═══ PAGE WRAPPER ═══ */
+.page{max-width:1060px;margin:0 auto;padding:90px 28px 80px}
+
+/* ═══ HERO HEADER ═══ */
+.proj-hero{
+  border-radius:28px;overflow:hidden;margin-bottom:32px;
+  background:var(--bg);box-shadow:var(--card);position:relative;
+}
+.proj-hero-bg{
+  height:220px;display:flex;align-items:center;justify-content:center;font-size:72px;
+  background:linear-gradient(135deg,rgba(108,99,255,0.18),rgba(255,101,132,0.1));
+  position:relative;overflow:hidden;
+}
+.proj-hero-orb{position:absolute;border-radius:50%;pointer-events:none}
+.pho1{width:300px;height:300px;top:-80px;right:-60px;background:radial-gradient(circle,rgba(108,99,255,0.2),transparent 70%);filter:blur(50px);animation:orb1 10s ease-in-out infinite}
+.pho2{width:250px;height:250px;bottom:-60px;left:-50px;background:radial-gradient(circle,rgba(255,101,132,0.15),transparent 70%);filter:blur(60px);animation:orb2 13s ease-in-out infinite}
+@keyframes orb1{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,20px)}}
+@keyframes orb2{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-20px)}}
+.proj-hero-emoji{position:relative;z-index:2;filter:drop-shadow(0 4px 24px rgba(108,99,255,0.3));animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.proj-hero-info{padding:28px 32px 32px}
+.proj-category{display:inline-flex;align-items:center;gap:7px;background:rgba(108,99,255,0.1);border-radius:50px;padding:6px 16px;font-size:11px;font-weight:800;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+.proj-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(108,99,255,0.4)}60%{transform:scale(1.4);box-shadow:0 0 0 6px rgba(108,99,255,0)}}
+.proj-title-big{font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,36px);font-weight:800;line-height:1.1;margin-bottom:10px}
+.proj-title-big span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.proj-desc-full{font-size:15px;color:var(--muted);line-height:1.8;max-width:640px;margin-bottom:18px}
+.tag-row{display:flex;gap:8px;flex-wrap:wrap}
+.ptag{background:var(--bg);border-radius:50px;box-shadow:var(--out-sm);padding:6px 16px;font-size:12px;font-weight:800;color:var(--accent);transition:all 0.25s,background 0.4s}
+.ptag:hover{box-shadow:var(--in-sm);transform:translateY(-2px)}
+.ptag-2{color:var(--accent2)}
+.ptag-3{color:var(--green)}
+
+/* ═══ SECTION HEADERS ═══ */
+.sec-head{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Syne',sans-serif;font-size:13px;font-weight:800;
+  letter-spacing:2px;text-transform:uppercase;color:var(--muted);
+  margin-bottom:18px;margin-top:32px;
+}
+.sec-head::before{content:'';width:22px;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px}
+
+/* ═══ PHOTO GALLERY ═══ */
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.gallery-grid .g-large{grid-column:span 2}
+.g-item{
+  border-radius:18px;overflow:hidden;cursor:pointer;
+  background:var(--bg);box-shadow:var(--card);
+  aspect-ratio:4/3;position:relative;
+  transition:transform 0.3s,box-shadow 0.3s;
+}
+.g-item:hover{transform:scale(1.02);box-shadow:var(--out)}
+.g-item img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform 0.4s;
+}
+.g-item:hover img{transform:scale(1.06)}
+.g-placeholder{
+  width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:8px;
+  background:linear-gradient(135deg,rgba(108,99,255,0.08),rgba(255,101,132,0.04));
+}
+.g-placeholder-icon{font-size:32px}
+.g-placeholder-label{font-size:11px;font-weight:700;color:var(--dim);letter-spacing:1px;text-transform:uppercase}
+.g-overlay{
+  position:absolute;inset:0;background:rgba(108,99,255,0.08);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity 0.3s;border-radius:18px;
+}
+.g-item:hover .g-overlay{opacity:1}
+.g-zoom-icon{
+  background:rgba(255,255,255,0.9);border-radius:50%;
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  font-size:20px;box-shadow:0 4px 20px rgba(108,99,255,0.3);
+}
+
+/* ═══ LIGHTBOX ═══ */
+#lightbox{
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);
+  align-items:center;justify-content:center;
+}
+#lightbox.open{display:flex}
+.lb-inner{position:relative;max-width:92vw;max-height:92vh;display:flex;flex-direction:column;align-items:center;gap:14px}
+#lb-img{
+  max-width:88vw;max-height:78vh;border-radius:16px;
+  box-shadow:0 20px 80px rgba(0,0,0,0.6);object-fit:contain;
+}
+.lb-close{
+  position:absolute;top:-14px;right:-14px;
+  background:var(--accent2);border:none;border-radius:50%;
+  width:38px;height:38px;cursor:pointer;color:#fff;font-size:18px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(255,101,132,0.5);transition:transform 0.2s;
+}
+.lb-close:hover{transform:scale(1.1)}
+.lb-arrows{display:flex;gap:12px;margin-top:4px}
+.lb-arrow{
+  background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);
+  border-radius:50%;width:46px;height:46px;cursor:pointer;color:#fff;font-size:20px;
+  display:flex;align-items:center;justify-content:center;transition:all 0.2s;
+  backdrop-filter:blur(10px);
+}
+.lb-arrow:hover{background:rgba(108,99,255,0.5)}
+.lb-caption{font-size:13px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.5px}
+.lb-counter{font-size:12px;color:rgba(255,255,255,0.4);font-weight:700}
+
+/* ═══ VIDEO SECTION ═══ */
+.videos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.vid-card{
+  background:var(--bg);border-radius:20px;box-shadow:var(--card);
+  overflow:hidden;cursor:pointer;transition:transform 0.3s,box-shadow 0.3s;
+}
+.vid-card:hover{transform:translateY(-4px);box-shadow:var(--out)}
+.vid-thumb{
+  height:160px;background:linear-gradient(135deg,rgba(255,101,132,0.15),rgba(108,99,255,0.08));
+  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+}
+.vid-play{
+  width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;box-shadow:0 8px 30px rgba(108,99,255,0.4);
+  transition:transform 0.3s;position:relative;z-index:2;
+}
+.vid-card:hover .vid-play{transform:scale(1.1)}
+.vid-emoji-bg{position:absolute;font-size:64px;opacity:0.15;filter:blur(2px)}
+.vid-info{padding:14px 18px 18px}
+.vid-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px}
+.vid-meta{font-size:12px;color:var(--muted);font-weight:600;display:flex;gap:12px}
+.vid-tag{display:inline-flex;align-items:center;gap:4px}
+
+/* ═══ VIDEO MODAL ═══ */
+#vid-modal{
+  display:none;position:fixed;inset:0;z-index:9998;
+  background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);
+  align-items:center;justify-content:center;
+}
+#vid-modal.open{display:flex}
+.vm-inner{
+  position:relative;width:min(860px,92vw);
+  background:var(--bg);border-radius:24px;box-shadow:var(--card);overflow:hidden;
+}
+.vm-video-wrap{
+  background:#000;position:relative;padding-top:56.25%;
+}
+.vm-video-wrap video,.vm-video-wrap iframe{
+  position:absolute;inset:0;width:100%;height:100%;border:none;
+}
+.vm-info{padding:20px 24px}
+.vm-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px}
+.vm-desc{font-size:13px;color:var(--muted);font-weight:600}
+.vm-close{
+  position:absolute;top:12px;right:12px;
+  background:rgba(0,0,0,0.6);border:none;border-radius:50%;
+  width:36px;height:36px;cursor:pointer;color:#fff;font-size:16px;
+  display:flex;align-items:center;justify-content:center;z-index:10;
+  transition:background 0.2s;
+}
+.vm-close:hover{background:rgba(255,101,132,0.8)}
+
+/* ═══ FILES SECTION ═══ */
+.files-list{display:flex;flex-direction:column;gap:12px}
+.file-item{
+  background:var(--bg);border-radius:18px;box-shadow:var(--out-sm);
+  padding:16px 20px;display:flex;align-items:center;gap:16px;
+  transition:all 0.3s,background 0.4s;text-decoration:none;
+}
+.file-item:hover{box-shadow:var(--in-sm);transform:translateX(4px)}
+.file-icon-wrap{
+  width:48px;height:48px;border-radius:14px;background:var(--bg);
+  box-shadow:var(--in-sm);display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;transition:transform 0.3s;
+}
+.file-item:hover .file-icon-wrap{transform:rotate(-5deg) scale(1.1)}
+.file-details{flex:1;min-width:0}
+.file-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-meta{font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}
+.dl-btn{
+  background:linear-gradient(135deg,var(--accent),#8b7fff);color:#fff;
+  border:none;border-radius:50px;padding:8px 18px;font-size:12px;font-weight:800;
+  cursor:pointer;font-family:'Nunito',sans-serif;white-space:nowrap;
+  box-shadow:0 4px 16px rgba(108,99,255,0.35);transition:all 0.25s;
+  text-decoration:none;
+}
+.dl-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(108,99,255,0.45)}
+
+/* ═══ BOTTOM NAV ═══ */
+.bottom-actions{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  gap:14px;margin-top:48px;align-items:center;
+}
+.nav-proj-btn{
+  background:var(--bg);border:none;border-radius:50px;box-shadow:var(--out-sm);
+  padding:12px 24px;font-size:13px;font-weight:800;cursor:pointer;
+  color:var(--accent);font-family:'Nunito',sans-serif;
+  transition:all 0.3s,background 0.4s;text-decoration:none;
+  display:flex;align-items:center;gap:8px;
+}
+.nav-proj-btn:hover{box-shadow:var(--in-sm)}
+.nav-proj-btn.right{justify-content:flex-end}
+.nav-proj-btn.left{justify-content:flex-start}
+.gh-btn{
+  background:linear-gradient(135deg,var(--accent),#8b7fff);color:#fff;
+  border:none;border-radius:50px;padding:12px 28px;font-size:13px;font-weight:800;
+  cursor:pointer;font-family:'Nunito',sans-serif;
+  box-shadow:0 4px 20px rgba(108,99,255,0.4);transition:all 0.3s;
+  text-decoration:none;white-space:nowrap;
+}
+.gh-btn:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(108,99,255,0.5)}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:768px){
+  .gallery-grid{grid-template-columns:repeat(2,1fr)}
+  .gallery-grid .g-large{grid-column:span 2}
+  .proj-hero-info{padding:20px 22px 24px}
+  .bottom-actions{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}
+  .gh-btn{grid-column:span 2;text-align:center}
+  nav{padding:12px 16px}
+  .page{padding:80px 16px 60px}
+}
+@media(max-width:480px){
+  .gallery-grid{grid-template-columns:1fr}
+  .gallery-grid .g-large{grid-column:span 1}
+  .videos-grid{grid-template-columns:1fr}
+  .proj-hero-bg{height:160px}
+  .proj-hero-emoji{font-size:52px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="back-btn" href="../index.html">← Back to Portfolio</a>
+  <div class="nav-right">
+    <span class="proj-nav-title">Photo Manipulation</span>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀️</button>
+  </div>
+</nav>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLB(event)">
+  <div class="lb-inner" onclick="event.stopPropagation()">
+    <button class="lb-close" onclick="closeLB()">✕</button>
+    <img id="lb-img" src="" alt="">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div class="lb-arrows">
+        <button class="lb-arrow" onclick="lbNav(-1)">‹</button>
+        <button class="lb-arrow" onclick="lbNav(1)">›</button>
+      </div>
+      <div class="lb-caption" id="lb-caption"></div>
+      <div class="lb-counter" id="lb-counter"></div>
+    </div>
+  </div>
+</div>
+
+<!-- VIDEO MODAL -->
+<div id="vid-modal" onclick="closeVM(event)">
+  <div class="vm-inner" onclick="event.stopPropagation()">
+    <button class="vm-close" onclick="closeVM()">✕</button>
+    <div class="vm-video-wrap">
+      <video id="vm-video" controls></video>
+    </div>
+    <div class="vm-info">
+      <div class="vm-title" id="vm-title"></div>
+      <div class="vm-desc" id="vm-desc"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- HERO -->
+  <div class="proj-hero">
+    <div class="proj-hero-bg">
+      <div class="proj-hero-orb pho1"></div>
+      <div class="proj-hero-orb pho2"></div>
+      <span class="proj-hero-emoji">🖼️</span>
+    </div>
+    <div class="proj-hero-info">
+      <div class="proj-category"><span class="proj-dot"></span>Design &amp; Art</div>
+      <div class="proj-title-big">Photo <span>Manipulation</span></div>
+      <p class="proj-desc-full">
+        Advanced photo compositing, retouching and surreal visual effects using Adobe Photoshop.
+        Each edit blends multiple layers, lighting corrections and creative color grading to produce
+        cinematic, high-impact visuals. From portrait retouching to full scene composites.
+      </p>
+      <div class="tag-row">
+        <span class="ptag">Photoshop</span>
+        <span class="ptag ptag-2">Retouching</span>
+        <span class="ptag ptag-3">Compositing</span>
+        <span class="ptag">Color Grading</span>
+        <span class="ptag ptag-2">Creative</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PHOTOS ═══ -->
+  <div class="sec-head">📸 Photos &amp; Screenshots</div>
+  <div class="gallery-grid" id="gallery">
+
+    <!-- 
+    ══════════════════════════════════════════════════════════
+    HOW TO ADD YOUR IMAGES:
+    
+    Replace the placeholder divs below with actual <img> tags.
+    Put your image files in: assets/projects/project-1/
+    
+    Example:
+    <div class="g-item g-large" onclick="openLB(0)">
+      <img src="../assets/projects/project-1/photo1.jpg" alt="Photo 1">
+      <div class="g-overlay"><div class="g-zoom-icon">🔍</div></div>
+    </div>
+    
+    The first item with class "g-large" spans 2 columns (featured).
+    Rest are normal 1-column items.
+    ══════════════════════════════════════════════════════════
+    -->
+
+    <div class="g-item g-large" onclick="openLB(0)">
+      <div class="g-placeholder">
+        <div class="g-placeholder-icon">🖼️</div>
+        <div class="g-placeholder-label">Photo 1 — Featured</div>
+      </div>
+      <div class="g-overlay"><div class="g-zoom-icon">🔍</div></div>
+    </div>
+    <div class="g-item" onclick="openLB(1)">
+      <div class="g-placeholder">
+        <div class="g-placeholder-icon">🎨</div>
+        <div class="g-placeholder-label">Photo 2</div>
+      </div>
+      <div class="g-overlay"><div class="g-zoom-icon">🔍</div></div>
+    </div>
+    <div class="g-item" onclick="openLB(2)">
+      <div class="g-placeholder">
+        <div class="g-placeholder-icon">✨</div>
+        <div class="g-placeholder-label">Photo 3</div>
+      </div>
+      <div class="g-overlay"><div class="g-zoom-icon">🔍</div></div>
+    </div>
+    <div class="g-item" onclick="openLB(3)">
+      <div class="g-placeholder">
+        <div class="g-placeholder-icon">🖌️</div>
+        <div class="g-placeholder-label">Photo 4</div>
+      </div>
+      <div class="g-overlay"><div class="g-zoom-icon">🔍</div></div>
+    </div>
+    <div class="g-item" onclick="openLB(4)">
+      <div class="g-placeholder">
+        <div class="g-placeholder-icon">📸</div>
+        <div class="g-placeholder-label">Photo 5</div>
+      </div>
+      <div class="g-overlay"><div class="g-zoom-icon">🔍</div></div>
+    </div>
+
+  </div>
+
+  <!-- ═══ VIDEOS ═══ -->
+  <div class="sec-head">🎬 Videos</div>
+  <div class="videos-grid">
+
+    <!--
+    HOW TO ADD VIDEOS:
+    Set the data-src to your video file path: ../assets/projects/project-1/demo.mp4
+    Or use a YouTube embed URL in data-src.
+    -->
+
+    <div class="vid-card" onclick="openVM('../assets/projects/project-1/video1.mp4','Process Timelapse','Speed edit showing the full Photoshop workflow.')">
+      <div class="vid-thumb">
+        <div class="vid-emoji-bg">🎬</div>
+        <div class="vid-play">▶</div>
+      </div>
+      <div class="vid-info">
+        <div class="vid-name">Process Timelapse</div>
+        <div class="vid-meta">
+          <span class="vid-tag">🎬 MP4</span>
+          <span class="vid-tag">📁 Place in assets/projects/project-1/</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="vid-card" onclick="openVM('../assets/projects/project-1/video2.mp4','Before &amp; After','Side by side comparison of edits.')">
+      <div class="vid-thumb">
+        <div class="vid-emoji-bg">✨</div>
+        <div class="vid-play">▶</div>
+      </div>
+      <div class="vid-info">
+        <div class="vid-name">Before &amp; After</div>
+        <div class="vid-meta">
+          <span class="vid-tag">🎬 MP4</span>
+          <span class="vid-tag">📁 Place in assets/projects/project-1/</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ FILES ═══ -->
+  <div class="sec-head">📁 Downloadable Files</div>
+  <div class="files-list">
+
+    <!--
+    HOW TO ADD FILES:
+    Change the href to your actual file path.
+    Example: href="../assets/projects/project-1/source.psd"
+    -->
+
+    <a class="file-item" href="../assets/projects/project-1/source-files.psd" download>
+      <div class="file-icon-wrap">📄</div>
+      <div class="file-details">
+        <div class="file-name">Source Files — source-files.psd</div>
+        <div class="file-meta">Photoshop PSD · Place in assets/projects/project-1/</div>
+      </div>
+      <span class="dl-btn">↓ Download</span>
+    </a>
+
+    <a class="file-item" href="../assets/projects/project-1/assets.zip" download>
+      <div class="file-icon-wrap">🗂️</div>
+      <div class="file-details">
+        <div class="file-name">All Assets — assets.zip</div>
+        <div class="file-meta">ZIP Archive · Place in assets/projects/project-1/</div>
+      </div>
+      <span class="dl-btn">↓ Download</span>
+    </a>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-actions">
+    <a class="nav-proj-btn left" href="project-6-config.html">← Prev Project</a>
+    <a class="gh-btn" href="https://github.com/yourprofile" target="_blank">GitHub ↗</a>
+    <a class="nav-proj-btn right" href="project-2-video.html">Next Project →</a>
+  </div>
+
+</div>
+
+<script>
+/* ═══ THEME ═══ */
+var root=document.documentElement;
+var isDark=localStorage.getItem('fth')==='dark';
+function applyTheme(){root.setAttribute('data-theme',isDark?'dark':'light');document.getElementById('themeBtn').textContent=isDark?'🌙':'☀️';}
+applyTheme();
+function toggleTheme(){isDark=!isDark;localStorage.setItem('fth',isDark?'dark':'light');applyTheme();}
+
+/* ═══ LIGHTBOX ═══
+   Collect all gallery images for navigation.
+   If using placeholder divs, lightbox shows a message.
+   If using real <img> tags, it shows the image.
+*/
+var lbImgs = [];
+var lbIndex = 0;
+
+function buildLBImgs() {
+  var items = document.querySelectorAll('.g-item');
+  lbImgs = [];
+  items.forEach(function(item, i) {
+    var img = item.querySelector('img');
+    var label = item.querySelector('.g-placeholder-label');
+    lbImgs.push({
+      src: img ? img.src : '',
+      caption: img ? (img.alt || 'Photo ' + (i+1)) : (label ? label.textContent : 'Photo ' + (i+1)),
+      isPlaceholder: !img
+    });
+  });
+}
+
+function openLB(index) {
+  buildLBImgs();
+  lbIndex = index;
+  showLB();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function showLB() {
+  var item = lbImgs[lbIndex];
+  var lbImg = document.getElementById('lb-img');
+  if (item.isPlaceholder) {
+    lbImg.src = '';
+    lbImg.style.display = 'none';
+    document.getElementById('lb-caption').textContent = item.caption + ' — Add your image to assets/projects/project-1/';
+  } else {
+    lbImg.src = item.src;
+    lbImg.style.display = 'block';
+    document.getElementById('lb-caption').textContent = item.caption;
+  }
+  document.getElementById('lb-counter').textContent = (lbIndex + 1) + ' / ' + lbImgs.length;
+}
+
+function lbNav(dir) {
+  lbIndex = (lbIndex + dir + lbImgs.length) % lbImgs.length;
+  showLB();
+}
+
+function closeLB(e) {
+  if (!e || e.target === document.getElementById('lightbox')) {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+document.addEventListener('keydown', function(e) {
+  var lb = document.getElementById('lightbox');
+  if (lb.classList.contains('open')) {
+    if (e.key === 'ArrowLeft') lbNav(-1);
+    else if (e.key === 'ArrowRight') lbNav(1);
+    else if (e.key === 'Escape') closeLB();
+  }
+  if (document.getElementById('vid-modal').classList.contains('open') && e.key === 'Escape') closeVM();
+});
+
+/* ═══ VIDEO MODAL ═══ */
+function openVM(src, title, desc) {
+  var vid = document.getElementById('vm-video');
+  vid.src = src;
+  document.getElementById('vm-title').textContent = title;
+  document.getElementById('vm-desc').textContent = desc;
+  document.getElementById('vid-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  vid.play().catch(function(){});
+}
+
+function closeVM(e) {
+  if (!e || e.target === document.getElementById('vid-modal')) {
+    var vid = document.getElementById('vm-video');
+    vid.pause();
+    vid.src = '';
+    document.getElementById('vid-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+</script>
+</body>
+</html>
