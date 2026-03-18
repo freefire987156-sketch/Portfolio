@@ -504,6 +504,19 @@ textarea.neu-input { resize: vertical; min-height: 115px; line-height: 1.65 }
 .visitor-counter:hover { box-shadow: var(--in-sm) }
 .vc-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s ease infinite; flex-shrink: 0; }
 .vc-num { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; color: var(--accent); }
+
+/* ═══ TYPING EFFECT ═══ */
+.typed-cursor { display:inline-block; width:3px; height:0.85em; background:var(--accent); margin-left:2px; animation:cursorBlink 0.75s ease-in-out infinite; vertical-align:middle; border-radius:2px; position:relative; top:-2px; }
+@keyframes cursorBlink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
+/* ═══ PROJECT FILTER ═══ */
+.proj-filter { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; }
+.pfbtn { background:var(--bg); border:none; border-radius:50px; box-shadow:var(--out-sm); padding:9px 22px; font-size:12px; font-weight:800; color:var(--muted); cursor:pointer; font-family:'Nunito',sans-serif; transition:all 0.25s,background 0.4s; }
+.pfbtn:hover { color:var(--accent); }
+.pfbtn.active { box-shadow:var(--in-sm); color:var(--accent); }
+.proj-card { transition:box-shadow 0.35s,background 0.4s,opacity 0.4s,transform 0.4s; }
+.proj-card.filtered-out { opacity:0; transform:scale(0.88); pointer-events:none; position:absolute; visibility:hidden; }
+
 /* footer */
 footer { position: relative; z-index: 2; text-align: center; padding: 40px; color: var(--muted); font-size: 13px; font-weight: 700; border-top: 1px solid rgba(128,128,128,0.15) }
 footer .acc { color: var(--accent); font-weight: 900; font-family: 'Syne', sans-serif }
@@ -548,6 +561,7 @@ footer .hrt { color: var(--accent2) }
 .reveal { opacity: 1; transform: none }
 .reveal.anim { opacity: 0; transform: translateY(36px); transition: opacity 0.8s cubic-bezier(.22,1,.36,1), transform 0.8s cubic-bezier(.22,1,.36,1) }
 .reveal.anim.visible { opacity: 1; transform: translateY(0) }
+.reveal.anim.hide-up { opacity: 0; transform: translateY(-36px); transition: opacity 0.6s cubic-bezier(.22,1,.36,1), transform 0.6s cubic-bezier(.22,1,.36,1) }
 
 @keyframes fadeUp { from{transform:translateY(28px);opacity:0} to{transform:translateY(0);opacity:1} }
 
@@ -645,7 +659,7 @@ body { top: 0 !important }
   <div class="hero-glass">
     <div class="greet-badge"><span class="greet-dot"></span><span id="gEmoji">☀️</span>&nbsp;<span id="gText">Good Morning</span>&nbsp;—&nbsp;<span id="gLocation">Loading...</span></div>
     <div class="avail-row"><span class="avail-dot"></span>Available for Work</div>
-    <h1 class="hero-h1"><span class="grad-word" id="gHead">Good Morning!</span></h1>
+    <h1 class="hero-h1"><span class="grad-word" id="gHead"></span><span class="typed-cursor"></span></h1>
     <p class="hero-sub">Photo &amp; Video Editor · 3D Artist · Developer —<br>turning ideas into visuals and code. 🚀</p>
     <div class="role-tags">
       <span class="role-tag rt-1">🎨 Designer</span>
@@ -697,13 +711,26 @@ body { top: 0 !important }
   <div class="sec-tag reveal">02 — My Work</div>
   <div class="sec-title reveal">Featured <span>Projects</span></div>
   <div class="sec-sub reveal">Hover for 3D tilt + colour orb · Click ♡ to like</div>
+  <div class="proj-filter reveal">
+    <button class="pfbtn active" onclick="filterProj('all',this)">✦ All</button>
+    <button class="pfbtn" onclick="filterProj('design',this)">🎨 Design</button>
+    <button class="pfbtn" onclick="filterProj('3d',this)">🧊 3D</button>
+    <button class="pfbtn" onclick="filterProj('code',this)">💻 Code</button>
+  </div>
+  <div class="filter-wrap">
+    <button class="filter-btn active" onclick="filterProj('all',this)">✦ All</button>
+    <button class="filter-btn" onclick="filterProj('design',this)">🎨 Design</button>
+    <button class="filter-btn" onclick="filterProj('code',this)">💻 Code</button>
+    <button class="filter-btn" onclick="filterProj('3d',this)">🧊 3D</button>
+  </div>
+  <div class="filter-count" id="filterCount">6 projects</div>
   <div class="projects-grid">
-    <div class="proj-card reveal"><div class="card-orb"></div><div class="card-shine"></div><div class="proj-thumb pt-1"><span class="proj-emoji">🖼️</span></div><div class="proj-body"><div class="proj-title">Photo Manipulation</div><div class="proj-desc">Advanced photo compositing and retouching using Photoshop — surreal, cinematic edits.</div><div class="proj-tags"><span class="tag">Photoshop</span><span class="tag">Retouching</span><span class="tag">Creative</span></div></div><div class="proj-footer"><button class="proj-btn" onclick="window.open('https://DemigodFX.github.io/projects/project-1-photo.html','_blank')">View Project ↗</button><button class="proj-like" onclick="toggleLike(this)">♡</button></div></div>
-    <div class="proj-card reveal"><div class="card-orb"></div><div class="card-shine"></div><div class="proj-thumb pt-2"><span class="proj-emoji">🎬</span></div><div class="proj-body"><div class="proj-title">Video Edit Reel</div><div class="proj-desc">Cinematic video edits with color grading, transitions and motion graphics in Premiere Pro &amp; After Effects.</div><div class="proj-tags"><span class="tag">Premiere Pro</span><span class="tag">After Effects</span><span class="tag">VFX</span></div></div><div class="proj-footer"><button class="proj-btn" onclick="window.open('https://DemigodFX.github.io/projects/project-2-video.html','_blank')">View Project ↗</button><button class="proj-like" onclick="toggleLike(this)">♡</button></div></div>
-    <div class="proj-card reveal"><div class="card-orb"></div><div class="card-shine"></div><div class="proj-thumb pt-3"><span class="proj-emoji">🧊</span></div><div class="proj-body"><div class="proj-title">3D Models — 3ds Max</div><div class="proj-desc">3D modeling, texturing and rendering of environments and product visualizations using Autodesk 3ds Max.</div><div class="proj-tags"><span class="tag">3ds Max</span><span class="tag">3D Render</span><span class="tag">Modeling</span></div></div><div class="proj-footer"><button class="proj-btn" onclick="window.open('https://DemigodFX.github.io/projects/project-3-3d.html','_blank')">View Project ↗</button><button class="proj-like" onclick="toggleLike(this)">♡</button></div></div>
-    <div class="proj-card reveal"><div class="card-orb"></div><div class="card-shine"></div><div class="proj-thumb pt-4"><span class="proj-emoji">🕷️</span></div><div class="proj-body"><div class="proj-title">Web Scraper — Python</div><div class="proj-desc">Automated web scraper built in Python to extract, filter and export structured data from websites.</div><div class="proj-tags"><span class="tag">Python</span><span class="tag">Scraping</span><span class="tag">Automation</span></div></div><div class="proj-footer"><button class="proj-btn" onclick="window.open('https://DemigodFX.github.io/projects/project-4-scraper.html','_blank')">View Project ↗</button><button class="proj-like" onclick="toggleLike(this)">♡</button></div></div>
-    <div class="proj-card reveal"><div class="card-orb"></div><div class="card-shine"></div><div class="proj-thumb pt-5"><span class="proj-emoji">🔌</span></div><div class="proj-body"><div class="proj-title">REST API Builder</div><div class="proj-desc">Custom REST APIs built with Node.js — endpoints, authentication, and JSON data management.</div><div class="proj-tags"><span class="tag">Node.js</span><span class="tag">API</span><span class="tag">Backend</span></div></div><div class="proj-footer"><button class="proj-btn" onclick="window.open('https://DemigodFX.github.io/projects/project-5-api.html','_blank')">View Project ↗</button><button class="proj-like" onclick="toggleLike(this)">♡</button></div></div>
-    <div class="proj-card reveal"><div class="card-orb"></div><div class="card-shine"></div><div class="proj-thumb pt-6"><span class="proj-emoji">⚙️</span></div><div class="proj-body"><div class="proj-title">Custom Website Configs</div><div class="proj-desc">Building custom configurations, automation scripts and tweaks for web platforms using Python &amp; JS.</div><div class="proj-tags"><span class="tag">Python</span><span class="tag">JavaScript</span><span class="tag">Config</span></div></div><div class="proj-footer"><button class="proj-btn" onclick="window.open('https://DemigodFX.github.io/projects/project-6-config.html','_blank')">View Project ↗</button><button class="proj-like" onclick="toggleLike(this)">♡</button></div></div>
+    <div class="proj-card reveal" data-cat="design"><div class="card-orb"></div><div class="card-shine"></div><div class="proj-thumb pt-1"><span class="proj-emoji">🖼️</span></div><div class="proj-body"><div class="proj-title">Photo Manipulation</div><div class="proj-desc">Advanced photo compositing and retouching using Photoshop — surreal, cinematic edits.</div><div class="proj-tags"><span class="tag">Photoshop</span><span class="tag">Retouching</span><span class="tag">Creative</span></div></div><div class="proj-footer"><button class="proj-btn" onclick="window.open('https://DemigodFX.github.io/projects/project-1-photo.html','_blank')">View Project ↗</button><button class="proj-like" onclick="toggleLike(this)">♡</button></div></div>
+    <div class="proj-card reveal" data-cat="design"><div class="card-orb"></div><div class="card-shine"></div><div class="proj-thumb pt-2"><span class="proj-emoji">🎬</span></div><div class="proj-body"><div class="proj-title">Video Edit Reel</div><div class="proj-desc">Cinematic video edits with color grading, transitions and motion graphics in Premiere Pro &amp; After Effects.</div><div class="proj-tags"><span class="tag">Premiere Pro</span><span class="tag">After Effects</span><span class="tag">VFX</span></div></div><div class="proj-footer"><button class="proj-btn" onclick="window.open('https://DemigodFX.github.io/projects/project-2-video.html','_blank')">View Project ↗</button><button class="proj-like" onclick="toggleLike(this)">♡</button></div></div>
+    <div class="proj-card reveal" data-cat="3d design"><div class="card-orb"></div><div class="card-shine"></div><div class="proj-thumb pt-3"><span class="proj-emoji">🧊</span></div><div class="proj-body"><div class="proj-title">3D Models — 3ds Max</div><div class="proj-desc">3D modeling, texturing and rendering of environments and product visualizations using Autodesk 3ds Max.</div><div class="proj-tags"><span class="tag">3ds Max</span><span class="tag">3D Render</span><span class="tag">Modeling</span></div></div><div class="proj-footer"><button class="proj-btn" onclick="window.open('https://DemigodFX.github.io/projects/project-3-3d.html','_blank')">View Project ↗</button><button class="proj-like" onclick="toggleLike(this)">♡</button></div></div>
+    <div class="proj-card reveal" data-cat="code"><div class="card-orb"></div><div class="card-shine"></div><div class="proj-thumb pt-4"><span class="proj-emoji">🕷️</span></div><div class="proj-body"><div class="proj-title">Web Scraper — Python</div><div class="proj-desc">Automated web scraper built in Python to extract, filter and export structured data from websites.</div><div class="proj-tags"><span class="tag">Python</span><span class="tag">Scraping</span><span class="tag">Automation</span></div></div><div class="proj-footer"><button class="proj-btn" onclick="window.open('https://DemigodFX.github.io/projects/project-4-scraper.html','_blank')">View Project ↗</button><button class="proj-like" onclick="toggleLike(this)">♡</button></div></div>
+    <div class="proj-card reveal" data-cat="code"><div class="card-orb"></div><div class="card-shine"></div><div class="proj-thumb pt-5"><span class="proj-emoji">🔌</span></div><div class="proj-body"><div class="proj-title">REST API Builder</div><div class="proj-desc">Custom REST APIs built with Node.js — endpoints, authentication, and JSON data management.</div><div class="proj-tags"><span class="tag">Node.js</span><span class="tag">API</span><span class="tag">Backend</span></div></div><div class="proj-footer"><button class="proj-btn" onclick="window.open('https://DemigodFX.github.io/projects/project-5-api.html','_blank')">View Project ↗</button><button class="proj-like" onclick="toggleLike(this)">♡</button></div></div>
+    <div class="proj-card reveal" data-cat="code"><div class="card-orb"></div><div class="card-shine"></div><div class="proj-thumb pt-6"><span class="proj-emoji">⚙️</span></div><div class="proj-body"><div class="proj-title">Custom Website Configs</div><div class="proj-desc">Building custom configurations, automation scripts and tweaks for web platforms using Python &amp; JS.</div><div class="proj-tags"><span class="tag">Python</span><span class="tag">JavaScript</span><span class="tag">Config</span></div></div><div class="proj-footer"><button class="proj-btn" onclick="window.open('https://DemigodFX.github.io/projects/project-6-config.html','_blank')">View Project ↗</button><button class="proj-like" onclick="toggleLike(this)">♡</button></div></div>
   </div>
 </div>
 <div class="divider"></div>
@@ -923,19 +950,49 @@ function setL(code, label, el) {
    COUNTERS
 ══════════════════════════════════ */
 function animC(el, target, suffix, dur) {
+  if (!el) return;
   var st = performance.now();
-  (function f(n) { var p=Math.min((n-st)/dur,1),e=1-Math.pow(1-p,4); el.textContent=Math.floor(e*target)+suffix; if(p<1)requestAnimationFrame(f); })(performance.now());
+  var from = 0;
+  (function f(n) {
+    var p = Math.min((n-st)/dur, 1);
+    var e = p < 1 ? 1-Math.pow(1-p, 4) : 1;
+    el.textContent = Math.floor(e * target) + (suffix||'');
+    if (p < 1) requestAnimationFrame(f);
+  })(performance.now());
 }
-setTimeout(function() { animC(document.getElementById('c1'),10,'+',1500); animC(document.getElementById('c2'),19,'',1800); }, 700);
+/* Counter triggered on scroll into view */
+var cObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) {
+      animC(document.getElementById('c1'), 10, '+', 1800);
+      animC(document.getElementById('c2'), 19, '', 2000);
+      cObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+var statEl = document.querySelector('.stats-float');
+if (statEl) cObs.observe(statEl);
 
 /* ══════════════════════════════════
    SCROLL REVEAL
 ══════════════════════════════════ */
 var ro = new IntersectionObserver(function(entries) {
   entries.forEach(function(e, i) {
-    if (e.isIntersecting) { setTimeout(function() { e.target.classList.add('visible'); }, i * 60); ro.unobserve(e.target); }
+    if (e.isIntersecting) {
+      e.target.classList.remove('hide-up');
+      setTimeout(function() { e.target.classList.add('visible'); }, i * 60);
+    } else {
+      /* Hide upward when scrolled past */
+      if (e.boundingClientRect.top < 0) {
+        e.target.classList.remove('visible');
+        e.target.classList.add('hide-up');
+      } else {
+        /* Reset to come from below again */
+        e.target.classList.remove('visible', 'hide-up');
+      }
+    }
   });
-}, { threshold: 0.06, rootMargin: '0px 0px 0px 0px' });
+}, { threshold: 0.06 });
 document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('anim'); ro.observe(el); });
 
 /* ══════════════════════════════════
@@ -1186,6 +1243,91 @@ document.querySelectorAll('.proj-card').forEach(function(card) {
   });
 })();
 
+
+/* ══════════════════════════════════
+   TYPING EFFECT
+══════════════════════════════════ */
+(function() {
+  var words = ['Designer 🎨','Video Editor 🎬','3D Artist 🧊','Developer 💻','Web Scraper 🕷️','Creator ✨'];
+  var wi=0, ci=0, del=false;
+  var el = document.getElementById('gHead');
+  if (!el) return;
+  function type() {
+    var w = words[wi];
+    if (!del) {
+      el.textContent = w.slice(0, ++ci);
+      if (ci === w.length) { del=true; setTimeout(type, 1800); return; }
+      setTimeout(type, 85);
+    } else {
+      el.textContent = w.slice(0, --ci);
+      if (ci === 0) { del=false; wi=(wi+1)%words.length; setTimeout(type, 350); return; }
+      setTimeout(type, 40);
+    }
+  }
+  /* Start after greeting loads */
+  setTimeout(type, 1000);
+})();
+
+/* ══════════════════════════════════
+   PROJECT FILTER
+══════════════════════════════════ */
+function filterProj(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  var cards = document.querySelectorAll('.proj-card');
+  var visible = 0;
+  cards.forEach(function(c) {
+    var cats = c.dataset.cat || '';
+    var show = cat === 'all' || cats.indexOf(cat) > -1;
+    if (show) { c.classList.remove('filtered'); visible++; }
+    else c.classList.add('filtered');
+  });
+  var fc = document.getElementById('filterCount');
+  if (fc) fc.textContent = visible + ' project' + (visible !== 1 ? 's' : '');
+}
+
+/* ══════════════════════════════════
+   SOUND EFFECTS — always ON
+══════════════════════════════════ */
+(function() {
+  var AudioCtx = window.AudioContext || window.webkitAudioContext;
+  var actx = null;
+  function getCtx() { if (!actx) actx = new AudioCtx(); return actx; }
+  function playTick(freq, dur, vol) {
+    try {
+      var ctx = getCtx();
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.setValueAtTime(freq, ctx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(freq*1.5, ctx.currentTime + dur*0.4);
+      g.gain.setValueAtTime(vol||0.08, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+      o.start(); o.stop(ctx.currentTime + dur);
+    } catch(e) {}
+  }
+  /* Attach sounds to interactive elements after DOM ready */
+  function attachSounds() {
+    /* Primary buttons */
+    document.querySelectorAll('.btn-primary, .submit-btn, .proj-btn').forEach(function(el) {
+      el.addEventListener('click', function(){ playTick(700, 0.1, 0.1); });
+    });
+    /* Secondary buttons */
+    document.querySelectorAll('.btn-secondary, .filter-btn, .pfbtn, .nav-link, .theme-btn, .lang-btn, .back-btn').forEach(function(el) {
+      el.addEventListener('click', function(){ playTick(450, 0.08, 0.07); });
+    });
+    /* Like button */
+    document.querySelectorAll('.proj-like').forEach(function(el) {
+      el.addEventListener('click', function(){ playTick(900, 0.12, 0.09); });
+    });
+  }
+  /* Init on first user interaction (browser policy) */
+  document.addEventListener('click', function init() {
+    getCtx();
+    attachSounds();
+    document.removeEventListener('click', init);
+  }, { once: true });
+})();
+
 /* ══════════════════════════════════
    BLOB PARALLAX on mouse
 ══════════════════════════════════ */
@@ -1195,6 +1337,21 @@ document.addEventListener('mousemove', function(e) {
 });
 </script>
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async>
+
+/* ══════════════════════════════════
+   PROJECT FILTER
+══════════════════════════════════ */
+function filterProj(cat, btn) {
+  document.querySelectorAll('.pfbtn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('.proj-card').forEach(function(c) {
+    var cats = c.dataset.cat || '';
+    var show = cat === 'all' || cats.indexOf(cat) > -1;
+    if (show) c.classList.remove('filtered-out');
+    else c.classList.add('filtered-out');
+  });
+}
+
 /* ══════════════════════════════════
    LIVE VISITOR COUNTER
 ══════════════════════════════════ */
